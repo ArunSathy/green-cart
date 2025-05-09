@@ -26,11 +26,11 @@ export const getAddress = async (req, res) => {
 
     try {
 
-        const { userId } = req.body;
+        const  { userId }  = req.query;
 
-        const addresses = await Address.find({userId});
+        const address = await Address.find({userId});
 
-        res.json({ success: true, addresses })
+        res.json({ success: true, address })
         
     } catch (error) {
 

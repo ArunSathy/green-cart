@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { useAppContext } from '../context/AppContext'
 import { assets, dummyAddress } from "../assets/assets";
+import toast from "react-hot-toast";
 
 const Cart = () => {
 
-    const { products, currency, cartItems, removeFromCart, updateCartItem, getCartCount, getCartAmount, navigate } = useAppContext();
+    const { products, currency, cartItems, removeFromCart, updateCartItem, getCartCount, getCartAmount, navigate, axios, user, setCartItems } = useAppContext();
 
     const [cartArray, setCartArray] = useState([]);
-    const [address, setAddress] = useState(dummyAddress);
+    const [address, setAddress] = useState([]);
     const [showAddress, setShowAddress] = useState(false);
-    const [selectAddress, setSelectAddress] = useState(dummyAddress[0]);
+    const [selectAddress, setSelectAddress] = useState(null);
     const [paymentOption, setPaymentOption] = useState('COD');
 
 
@@ -23,15 +24,86 @@ const Cart = () => {
         setCartArray(tempArray);
     }
 
-    const placeOrder = async () => {
+    // get user address
+    const getUserAddress = async () => {
+        try {
+            
+            const { data } = await axios.get('/api/address/get', {params: { userId: user._id }});
+
+            if(data.success){
+                setAddress(data.address)
+
+                if(data.address.length > 0){
+                    setSelectAddress(data.address[0])
+                }
+            }else{
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.message);
+        }
 
     }
+
+
+    const placeOrder = async () => {
+
+        try {
+
+            if(!selectAddress){
+                return toast.error('Please Select an Address')
+            }
+
+            // place order with COD
+            if(paymentOption === 'COD'){
+
+                const { data } = await axios.post('/api/order/cod', {
+                    userId: user._id,
+                    items: cartArray.map(item=> ({product: item._id, quantity: item.quantity})),
+                    address: selectAddress._id
+                })
+
+                if(data.success){
+                    toast.success(data.message);
+                    setCartItems({});
+                    navigate('/my-orders')
+                }else{
+                    toast.error(data.message)
+                }
+            }else{
+                // place online ordre with stripe
+                const { data } = await axios.post('/api/order/stripe', {
+                    userId: user._id,
+                    items: cartArray.map(item=> ({product: item._id, quantity: item.quantity})),
+                    address: selectAddress._id
+                })
+
+                if(data.success){
+                    window.location.replace(data.url);
+                }else{
+                    toast.error(data.message)
+                }
+            }
+            
+        } catch (error) {
+            toast.error(error.message)
+        }
+
+    }
+
 
     useEffect(() => {
         if (products.length > 0 && cartItems) {
             getCart();
         }
     }, [products, cartItems])
+
+
+    useEffect(() => {
+        if(user){
+            getUserAddress();
+        }
+    },[user])
 
 
     return products.length > 0 && cartItems ? (
