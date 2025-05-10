@@ -13,7 +13,7 @@ const Navbar = () => {
 
         try {
 
-            const { data } = await axios.get('/api/user/logout',{withCredentials: true});
+            const { data } = await axios.get('/api/user/logout');
 
             if (data.success) {
 
