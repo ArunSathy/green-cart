@@ -1,9 +1,8 @@
-
-{
-  "rewrites": [
-    {
-      "source": "/api/:match*",
-      "destination": "https://greencart-backend-gamma.vercel.app/api/:match*"
-    }
-  ]
-}
+  {
+    "rewrites": [
+      {
+        "source": "/(.*)",
+        "destination": "/"
+      }
+    ]
+  }
