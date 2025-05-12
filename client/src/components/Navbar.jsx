@@ -7,32 +7,8 @@ import toast from 'react-hot-toast';
 const Navbar = () => {
 
     const [open, setOpen] = React.useState(false);
-    const { user, setUser, setShowUserLogin, navigate, setSearchQuery, searchQuery, getCartCount, axios } = useAppContext();
+    const { user, setUser, setShowUserLogin, navigate, setSearchQuery, searchQuery, getCartCount, axios, logoutUser } = useAppContext();
 
-    const logout = async () => {
-
-        try {
-
-            const { data } = await axios.get('/api/user/logout');
-
-            if (data.success) {
-
-                toast.success(data.message)
-
-                setUser(null)
-                navigate('/')
-
-            }else{
-                toast.error(data.message)
-            }
-
-        } catch (error) {
-
-            toast.error(error.message)
-
-        }
-
-    }
 
     useEffect(() => {
         if (searchQuery.length > 0) {
@@ -110,7 +86,7 @@ const Navbar = () => {
                             Login
                         </button>
                     ) : (
-                        <button onClick={logout} className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm">
+                        <button onClick={logoutUser} className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm">
                             Logout
                         </button>
                     )}
