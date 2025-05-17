@@ -132,7 +132,7 @@ export const AppContextProvider = ({ children }) => {
     // user logout function to add in navbar
     const logoutUser = async () => {
         try {
-            const { data } = await axios.get('/api/user/logout');
+            const { data } = await axios.get('/api/user/logout', {withCredentials: true});
             if (data.success) {
                 toast.success(data.message);
                 setUser(null);
