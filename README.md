@@ -21,7 +21,7 @@ This project showcases my ability to build end-to-end web applications, manage b
 1. Frontend: React.js, Tailwind CSS
 2. Backend: Node.js, Express.js
 3. Database: MongoDB
-4. Authentication: JSON Web Tokens (JWT)
+4. Authentication: JSON Web Token (JWT)
 5. API: Axios for API requests
 6. Payment: Stripe
 
